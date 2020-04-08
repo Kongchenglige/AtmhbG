@@ -32,7 +32,7 @@ function theexit($input){
 
 if(empty($_GET)){//是否为空输入
 	header('HTTP/1.1 404 Not Found');
-	exit(file_get_contents('404b.html'));
+	exit(file_get_contents('404b.txt'));
 	//没东西找我干啥,404丢给你!
 }
 
