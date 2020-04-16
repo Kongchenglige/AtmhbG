@@ -1,8 +1,1 @@
-{
-	"admins":{
-	"0":"2580231931",
-	"1":"457403590",
-	"2":"2512110209"
-	},
-	"permission":"test,ping,bv2av,help"
-}
+{"admins":["2580231931","457403590","2512110209","3507296385","3470004930"],"permission":"test,ping,bv2av,help,debug,ghs,account"}

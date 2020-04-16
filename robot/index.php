@@ -21,12 +21,12 @@ function theexit($input){
 	$time_end = microtime_float();
 	$time = $time_end - $time_start;
 
-	echo "<br>脚本运行了 $time 秒";
+	echo "<br>运行时间: $time 秒";
 	exit();
 }}
 
 //暂停业务
-//exit('void');
+//exit('cmd:void');
 
 //预处理部分
 
@@ -109,8 +109,10 @@ unset($tmp);
 //匹配一下是不是能用这个指令
 $backcout =  array_search($commands[0],explode(',',$group_premission));
 //没有或者匹配到的和指令不同就退出
-if(!is_numeric($backcout)){
+if(!is_numeric($backcout) and $commands[0] !== 'admin'){
+	if(!$isglobaladmin){
 	theexit('cmd:void');
+	}
 }
 
 
@@ -125,7 +127,8 @@ if(!$pluginsisload){//是否成功加载
 
 theexit('void');
 }else{//私聊部分
-echo '抱歉,现在仅支持群组聊天';
+include_once('plugins/accountlink.php');
+
 theexit('');
 }
 theexit('void');

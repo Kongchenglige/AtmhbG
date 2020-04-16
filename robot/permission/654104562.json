@@ -4,5 +4,5 @@
 	"1":"457403590",
 	"2":"2512110209"
 	},
-	"permission":"test,ping,bv2av,help"
+	"permission":"test,ping,bv2av,help,debug,suicide"
 }

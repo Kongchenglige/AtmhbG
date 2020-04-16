@@ -12,34 +12,40 @@ for ($i=0; $i<=57; $i++){
 $s = array(11,10,3,8,4,6);
 $xor = 177451812;
 $add = 8728348608;
-var_dump($commands);
+
+function dec($x){
+	global $table,$tr,$s,$xor,$add;
+	$r = 0;
+	for ($i=0; $i<=5; $i++){
+		$r+=$tr[$x[$s[$i]]]*58**$i;
+	}
+	return(($r - $add) ^ $xor);
+}
+
+function enc($x){
+	if(!is_numeric($x)){
+		return('[Bav]只输入数字');
+	}
+	
+	global $table,$tr,$s,$xor,$add;
+	$x = ($x ^ $xor) + $add;
+	$r = array('B','V','1',' ',' ','4',' ','1',' ','7',' ',' ');
+	for ($i=0; $i<=5; $i++){
+		$r[$s[$i]] = $table[floor($x/58**$i)%58];
+	}
+	
+	$tmp ='';
+	
+	foreach($r as $value){
+		$tmp = $tmp.$value;
+	}
+	return($tmp);
+}
+
 if($commands[1] == 'toav') {
-		$x = $commands[2];
-		$r = 0;
-		for ($i=0; $i<=5; $i++){
-			$r+=$tr[$x[$s[$i]]]*58**$i;
-		}
-		echo ($r - $add) ^ $xor;
+	echo dec($commands[2]);
+	theexit('');
+}elseif ($commands[1] == 'tobv') {
+	echo enc($commands[2]);
+	theexit('');
 }
-if ($commands[1] == 'tobv') {
-		$x = $commands[2];
-		if(!is_numeric($x)){
-			echo '[Bav]只输入数字';
-		}
-		
-		global $table,$tr,$s,$xor,$add;
-		$x = ($x ^ $xor) + $add;
-		$r = array('B','V','1',' ',' ','4',' ','1',' ','7',' ',' ');
-		for ($i=0; $i<=5; $i++){
-			$r[$s[$i]] = $table[floor($x/58**$i)%58];
-		}
-		
-		$tmp ='';
-		
-		foreach($r as $value){
-			$tmp = $tmp.$value;
-		}
-		echo $tmp;
-		break;
-}
-theexit('');

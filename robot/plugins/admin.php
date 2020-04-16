@@ -1,7 +1,5 @@
 <?php
-echo 1;
 $pluginsisload = true;
-
 
 if(!$isglobaladmin){
 	if(!$isgroupadmin){
@@ -11,7 +9,7 @@ if(!$isglobaladmin){
 
 if($isgroupadmin){
 	$userpremission = '组管理员';
-	$cando = '	未指派<br>	';
+	$cando = '	希腊奶~希腊奶~<br>	';
 }
 if ($isglobaladmin) {
 	$userpremission = '全局管理员';
@@ -22,33 +20,57 @@ if ($isglobaladmin) {
 	unset($ltmp);
 }
 
-echo 't';
-switch ($commands[1]) {
-	case 'help':
-		echo '这是管理员的帮助菜单';
-		break;
-	case 'info':
-		echo '您是 '.$userpremission.'<br>';
-		echo '您可以使用:<br>';
-		echo $cando;
-		break;
-	case 'settx':
-		theexit("cmd:settx");
-		break;
-	/*case 'user':
-		if($commands[2] == 'add') {
-				echo 'add';
-		}elseif ($commands[2] == 'del') {
-				echo 'del';
+if($commands[1] == 'help'){
+	echo '这是管理员的帮助菜单';
+	theexit('');
+}elseif($commands[1] == 'info'){
+	echo '您是 '.$userpremission.'<br>';
+	echo '您可以使用:<br>';
+	echo $cando;
+	theexit('');
+}elseif($commands[1] == 'settx'){
+	theexit("cmd:settx");
+}elseif($commands[1] == 'debug'){
+	print_r($commands);
+	theexit('');
+}elseif($commands[1] == 'user'){
+	if(!$isglobaladmin){
+		theexit('您不是全局管理员,没有权限任命或移除群组管理员');
+	}
+	if($commands[2] == 'add'){
+		$group_p = json_decode(file_get_contents('./permission/'.$group.'.json'),true);
+		array_push($group_p['admins'],$commands[3]);
+		if(file_put_contents('./permission/'.$group.'.json',json_encode($group_p)) === false){
+			echo '出现错误,无法写到权限文件';
+		}else{
+			echo $commands[3].'已被添加至'.$group.'的组管理员';
 		}
-		break;
-	*/
-	case 'debug':
-		print_r($commands);
 		theexit('');
-		break;
-	default:
-		theexit('void');
-		break;
+	}elseif($commands[2] == 'del'){
+		$group_p = json_decode(file_get_contents('./permission/'.$group.'.json'),true);
+		
+		$result = array_search($commands[3],$group_p['admins']);
+		
+		if(!is_numeric($result)){
+			theexit('无法移除,用户不存在');
+		}else{
+			unset($group_p['admins'][$result]);
+			if(file_put_contents('./permission/'.$group.'.json',json_encode($group_p)) === false){
+				echo '出现错误,无法写到权限文件';
+			}else{
+				echo $commands[3].'已被移除'.$group.'的组管理员权限';
+			}
+		}
+		theexit('');
+	}elseif($commands[2] == 'list'){
+		$group_p = json_decode(file_get_contents('./permission/'.$group.'.json'),true);
+		echo '当前群组可用的管理员有:<br>';
+		foreach($group_p['admins'] as $ltmp){
+		echo '	'.$ltmp.'<br>';
+		}
+	unset($ltmp);
+		theexit('');
+	}
+	theexit('');
 }
-theexit('');
+theexit('cmd:void');
