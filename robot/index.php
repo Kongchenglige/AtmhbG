@@ -1,10 +1,15 @@
 <?php
+//设置会话ID,这样省点事,保存临时数据不错,比如对话、选择之类的
+session_id($_GET['fromQQ']);
+//启动会话
+session_start();
 header('Content-Type: text/html; charset=utf-8');//输出头,虽然说反而坑的还得转换一次吧
 //error_reporting(0);//不输出报错
+error_reporting(E_ERROR | E_PARSE);//输出部分报错 
 
 function microtime_float()//脚本启动时间计算
 {
-    list($usec, $sec) = explode(" ", microtime());
+    list($usec, $sec) = explode(' ', microtime());
     return ((float)$usec + (float)$sec);
 }
 
@@ -89,18 +94,29 @@ if(is_numeric(array_search($sender,$globaladmins))){//是不是全局管理员
 
 $group_premission = json_decode(@file_get_contents('permission/'.$group.'.json'),true);
 if(empty($group_premission)){//如果提取不到就是没登记
-	theexit('void');
+    if(!$isglobaladmin){//除非你是全局管理
+	theexit('void');//退出
+    }
 } 
 $tmp = $group_premission['permission'];//权限拉出来
 
 $tmp2 = $group_premission['admins'];//管理员也拉出来
+
+$tmp3 = $group_premission['ignores'];//还有这个屏蔽列表
+
 if(is_numeric(array_search($sender,$tmp2))){//是不是群管理员
 	$isgroupadmin = true;
 }else{
 	$isgroupadmin = false;
 }
 
-unset($group_premission,$tmp2);
+if(is_numeric(array_search($sender,$tmp3))){//查询屏蔽列表
+    if(!$isglobaladmin or !$isgroupadmin){
+    theexit('void');
+    }
+}
+
+unset($group_premission,$tmp2,$tmp3);
 $group_premission = $tmp;
 unset($tmp);
 
@@ -115,6 +131,9 @@ if(!is_numeric($backcout) and $commands[0] !== 'admin'){
 	}
 }
 
+$qqinfo = json_decode(file_get_contents('https://api.toubiec.cn/rand.qq?qq='.$sender),true);
+$QQname = $qqinfo['data']['name'];
+unset($qqinfo);
 
 //引入插件
 @include_once('plugins/'.$commands[0].'.php');

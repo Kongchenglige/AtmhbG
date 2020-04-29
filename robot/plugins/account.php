@@ -1,18 +1,18 @@
 <?php
 $pluginsisload = true;
 
-if(!file_exists('users/'.$sender.'.json')){
+if(!file_exists('users/'.$sender.'/permission.json')){
 	echo '您尚未绑定 IaSoC 账户,请先绑定!';
 	theexit('');
 }
 //先拉出来备用
-$useraccountinfo = json_decode(file_get_contents('users/'.$sender.'.json'),true);
+$useraccountinfo = json_decode(file_get_contents('users/'.$sender.'/permission.json'),true);
 
 if($commands[1] == 'info'){
 	
-	$qqinfo = json_decode(file_get_contents('https://api.toubiec.cn/qq?qq='.$sender),true);
+	$qqinfo = json_decode(file_get_contents('https://api.toubiec.cn/rand.qq?qq='.$sender),true);
 
-	echo '亲爱的 '.$qqinfo['name'].'('.$sender.') 您好:'.PHP_EOL;
+	echo '亲爱的 '.$qqinfo['data']['name'].'('.$sender.') 您好:'.PHP_EOL;
 	echo '昵称: '.$useraccountinfo['username'].PHP_EOL;
 	echo '您的权限:'.$useraccountinfo['level'].'级('.$useraccountinfo['rank'].')'.PHP_EOL;
 }elseif ($commands[1] == 'getglobalaccess') {

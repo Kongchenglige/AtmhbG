@@ -21,7 +21,7 @@ if ($isglobaladmin) {
 }
 
 if($commands[1] == 'help'){
-	echo '这是管理员的帮助菜单';
+	echo '可用指令:<br>  info<br>  settx<br>  debug<br>  ignore<br>  user<br>  list';
 	theexit('');
 }elseif($commands[1] == 'info'){
 	echo '您是 '.$userpremission.'<br>';
@@ -32,6 +32,15 @@ if($commands[1] == 'help'){
 	theexit("cmd:settx");
 }elseif($commands[1] == 'debug'){
 	print_r($commands);
+	theexit('');
+}elseif($commands[1] == 'ignore'){
+    $group_p = json_decode(file_get_contents('./permission/'.$group.'.json'),true);
+        $group_p['ignores'][] = $commands[2];
+		if(file_put_contents('./permission/'.$group.'.json',json_encode($group_p)) === false){
+			echo '出现错误,无法写到权限文件';
+		}else{
+			echo $commands[2].'已在'.$group.'被无视输入';
+		}
 	theexit('');
 }elseif($commands[1] == 'user'){
 	if(!$isglobaladmin){
@@ -62,15 +71,19 @@ if($commands[1] == 'help'){
 			}
 		}
 		theexit('');
-	}elseif($commands[2] == 'list'){
-		$group_p = json_decode(file_get_contents('./permission/'.$group.'.json'),true);
-		echo '当前群组可用的管理员有:<br>';
-		foreach($group_p['admins'] as $ltmp){
-		echo '	'.$ltmp.'<br>';
-		}
-	unset($ltmp);
-		theexit('');
 	}
+	theexit('');
+}elseif($commands[1] == 'list'){
+	$group_p = json_decode(file_get_contents('./permission/'.$group.'.json'),true);
+	echo '当前群组可用的管理员有:<br>';
+	foreach($group_p['admins'] as $ltmp){
+		echo '	'.$ltmp.'<br>';
+	}
+	unset($ltmp);
+	theexit('');
+}elseif($commands[1] == 'session'){
+	echo 'seesion ID:'.session_id().PHP_EOL;
+	var_dump($_SESSION);
 	theexit('');
 }
 theexit('cmd:void');

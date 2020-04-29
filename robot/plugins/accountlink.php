@@ -9,7 +9,7 @@ if(!empty($group)){
 	theexit('');
 }
 
-if(!empty($_SESSION)){
+if(!empty($_SESSION['referer'])){
 	unset($_SESSION['referer']);
 	$datar = explode('?data=',$_GET['id']);
 	$data = json_decode($aes->decrypt($datar[1], substr(md5(OPENAPI_TOKEN), 0, 16), OPENAPI_TOKEN), true);
@@ -19,7 +19,7 @@ if(!empty($_SESSION)){
 		'level' => $data['lvl'],
 		'rank' => $data['rank']
 		);
-	if(file_put_contents('../users/'.$_SESSION['QQ'].'.json',json_encode($array,JSON_UNESCAPED_UNICODE)) === false){
+	if(file_put_contents('../users/'.$_SESSION['QQ'].'/permission.json',json_encode($array,JSON_UNESCAPED_UNICODE)) === false){
 		exit('出现错误');
 	}else{
 		echo '<h1>绑定账户 '.$data['username'].'('.$data['email'].') 成功</h1>';
@@ -48,7 +48,7 @@ if(!empty($sender)){
 	if($commands[0] !== 'link'){
 		echo '如果您要连接到 IaSoC 账户的话,请输入"/link"指令,我们将会发送一个链接,请打开链接进行登录';
 	}elseif($commands[0] == 'link'){
-		echo 'https://api.iasoc.cn/test/robot/plugins/accountlink.php?qq='.$sender.'&id='.md5($sender.sha1($sender.'nmsl').md5(date('Y/m/d/G')));
+		echo 'https://hydrangea.iasoc.cn:8085/robot/plugins/accountlink.php?qq='.$sender.'&id='.md5($sender.sha1($sender.'nmsl').md5(date('Y/m/d/G')));
 	}
 }
 // AES-256-CFB 加密类
